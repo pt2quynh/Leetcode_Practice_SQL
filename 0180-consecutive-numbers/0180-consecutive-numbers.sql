@@ -12,11 +12,21 @@
 # from t1
 
 # solution 2
+# select distinct num as ConsecutiveNums 
+# from (
+#         select num, 
+#                 lag(num, 1) over() as lead_1,
+#                 lead(num, 2) over() as lead_2
+#         from logs
+# ) x
+# where (num = lead_1) and(num = lead_2)
+
+#solution 3
 select distinct num as ConsecutiveNums 
 from (
-        select num, 
-                lead(num, 1) over() as lead_1,
-                lead(num, 2) over() as lead_2
+        select id, num,
+                lag(num) over(order by id) as prev,
+                lead(num) over(order by id) as next
         from logs
-) x
-where (num = lead_1) and(num = lead_2)
+)x
+where (num = prev) and (num = next)
